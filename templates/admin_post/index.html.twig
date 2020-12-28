@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Manage articles{% endblock %}
+
+{% block body %}
+	<div class="col-md-8 content p-3 bg-white rounded my-shadow">
+		<h1>
+			Manage articles
+		</h1>
+
+		{% for message in app.flashes('success') %}
+			<div class="alert alert-success">
+				{{ message }}
+			</div>
+		{% endfor %}
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>
+						id
+					</th>
+					<th>
+						Title
+					</th>
+					<th>
+						Date
+					</th>
+					<th>
+						Actions
+					</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				{% for post in posts %}
+					<tr>
+						<td>
+							{{ post.id }}</td>
+						<td>
+							{{ post.title }}</td>
+						<td>
+							{{ post.getCreatedAt()|date("Y-m-d H:i:s") }}</td>
+						<td>
+							<a href="{{ path('admin_edit', {id : post.id})}}" class="btn my-btn-secondary my-1">
+								<i class="fa fa-edit"></i>
+								Modify
+							</a>
+							<form method="post" action="{{ path('admin_delete', {id : post.id})}}" style="display: inline-block" onsubmit="return confirm('Are you sure to delete this post ?')">
+								<input type="hidden" name="_method" value="DELETE">
+								<input type="hidden" name="_token" value="{{csrf_token('delete' ~ post.id)}}">
+								<button class="btn my-btn-primary my-1">
+								<i class="fa fa-trash-alt"></i>
+									Delete
+								</button>
+							</form>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+
+		<div id="pagination" class="pagination d-flex justify-content-center">
+			{{ knp_pagination_render(posts) }}
+		</div>
+		
+		<div class="text-right">
+			<a href="{{ path('admin_create')}}" class="btn my-btn-third">
+				<i class="fa fa-plus"></i>
+				Create Post
+			</a>
+		</div>
+
+	</div>
+{% endblock %}
